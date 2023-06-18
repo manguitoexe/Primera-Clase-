@@ -1,5 +1,6 @@
 import pygame
 
+from game.utils.constants import BURST_ENEMY_SOUND, SHIELD_TYPE
 
 class BulletManager:
   def __init__(self):
@@ -14,6 +15,7 @@ class BulletManager:
         if bullet.rect.colliderect(enemy.rect) and bullet.owner == 'player':
             game.enemy_manager.enemies.remove(enemy)
             game.score.update()
+            pygame.mixer.Sound.play(BURST_ENEMY_SOUND) 
             self.bullets.remove(bullet)
 
     for bullet in self.enemy_bullets:
@@ -21,10 +23,11 @@ class BulletManager:
       
       if bullet.rect.colliderect(game.player.rect) and bullet.owner == 'enemy':
         self.enemy_bullets.remove(bullet)
-        game.death_count.update()
-        game.playing = False
-        pygame.time.delay(1000)
-        break
+        if game.player.power_up_type != SHIELD_TYPE:
+          game.death_count.update()
+          game.playing = False
+          pygame.time.delay(1000)
+          break
   
   def draw(self, screen):
     for bullet in self.bullets:
@@ -42,6 +45,9 @@ class BulletManager:
   def reset(self):
     self.bullets = []
     self.enemy_bullets = []
+
+
+
 
 
 
